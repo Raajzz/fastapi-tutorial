@@ -79,16 +79,23 @@ async def meta_info(
 
 # alias
 
-from typing import Optional
-
-from fastapi import FastAPI, Query
-
-app = FastAPI()
-
-
 @app.get("/alias/")
 async def read_items(q: Optional[str] = Query(None, alias="item-query")):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
     if q:
         results.update({"q": q})
     return results
+
+
+# include_in_schema=False will hide the query from the automatic documentation
+# deprecated=True will just notify the automatic documentation that the following 
+# parameter is deperecated
+
+@app.get("/exclude/")
+async def read_items(
+    hidden_query: Optional[str] = Query(None, include_in_schema=True, deprecated=True)
+):
+    if hidden_query:
+        return {"hidden_query": hidden_query}
+    else:
+        return {"hidden_query": "Not found"}
