@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query, Body
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -44,3 +44,16 @@ async def update_item(
     "item":item,
     "user": user}
   return results
+
+# singluar values
+
+@app.post("/importance/{item_id}")
+async def singular_item(*,
+  item_id: int, item: Item, user: User, importance: int = Body(...)
+):
+  results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
+  return results
+
+@app.post("/single_val_with_key/")
+async def single_val_with_key(item: Item = Body(..., embed=True)):
+  return {"items":item}
